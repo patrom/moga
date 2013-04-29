@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
+import be.util.Frequency;
+
 public class RowMatrix {
 	
 	private int[][] rowMatrix;
@@ -20,7 +22,7 @@ public class RowMatrix {
 		
 	
 	
-		List<Integer> set = Arrays.asList(TwelveToneSets.violinConcertoSchoenbergHexa1);
+		List<Integer> set = Arrays.asList(TwelveToneSets.violinConcertoSchoenberg);
 //		Collections.shuffle(set);
 		System.out.println(set);
 		System.out.println(RowMatrix.multiply(set));
@@ -67,8 +69,10 @@ public class RowMatrix {
 
 	public void show() {
 		for (int i = 0; i < rowMatrix[0].length; i++) {
-			for (int j = 0; j < rowMatrix.length; j++)
-				System.out.print(rowMatrix[i][j] + "\t");
+			for (int j = 0; j < rowMatrix.length; j++){
+				int pc = rowMatrix[i][j];
+				System.out.print(pc + "," + Frequency.NOTE_SYMBOL[pc] + "\t");
+			}		
 			System.out.println();
 		}
 	}

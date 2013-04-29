@@ -5,7 +5,7 @@ public class Frequency
 
     private static final double PITCH_OF_A4 = 57D;
     private static final double FACTOR = 12D / Math.log(2D);
-    private static final String NOTE_SYMBOL[] = {
+    public static final String NOTE_SYMBOL[] = {
         "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A",
         "A#", "B"
     };
