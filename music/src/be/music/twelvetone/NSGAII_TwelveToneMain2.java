@@ -53,10 +53,11 @@ import be.music.tonal.operator.ConcatRhythmMutation;
 import be.music.tonal.operator.OnePointCrossover;
 import be.music.tonal.operator.SplitRhythmMutation;
 import be.music.twelvetone.operator.ShiftNoteMutationAtonal;
+import be.music.twelvetone.operator.ShiftPartitionMutationAtonal;
 import be.music.twelvetone.operator.SwitchVoiceMutationAtonal;
 import be.util.ScoreUtilities;
 
-public class NSGAII_TwelveToneMain implements JMC{
+public class NSGAII_TwelveToneMain2 implements JMC{
 	  public static Logger      logger_ ;      // Logger object
 	  public static FileHandler fileHandler_ ; // FileHandler object
 	  private static MusicProperties inputProps = new MusicProperties();
@@ -92,7 +93,7 @@ public class NSGAII_TwelveToneMain implements JMC{
     
 //    problem = new Kursawe("Real", 3);
     problem = new MusicAtonalProblem("music", 1, inputProps);
-    SolutionType type = new MusicSolutionAtonalType(problem, inputProps.getMelodyLength(), inputProps.getScale()
+    SolutionType type = new MusicSolutionAtonalType2(problem, inputProps.getMelodyLength(), inputProps.getScale()
 			, inputProps.getRhythmProfile(), inputProps.getPopulationStrategy(), inputProps.getRanges(), inputProps.getMelodyLength() * 12) ;
     problem.setSolutionType(type);
 //    indicators = new QualityIndicator(problem, "C://midi//paretoFrontFile.txt");
@@ -104,7 +105,7 @@ public class NSGAII_TwelveToneMain implements JMC{
     // Algorithm parameters
     int populationSize = 10;
     algorithm.setInputParameter("populationSize",populationSize);
-    algorithm.setInputParameter("maxEvaluations",populationSize * 2000);
+    algorithm.setInputParameter("maxEvaluations",populationSize * 200);
     // Mutation and Crossover for Real codification10
     crossover = new OnePointCrossover(inputProps.getMelodyLength());
 //    crossover = new OnePointCrossover2();
@@ -121,10 +122,10 @@ public class NSGAII_TwelveToneMain implements JMC{
 //    mutation.setParameter("probabilityOneNote",0.0);
     
     mutation = new SwitchVoiceMutationAtonal(inputProps.getRanges());
-    mutation.setParameter("probabilitySwitchVoice",1.0);
+    mutation.setParameter("probabilitySwitchVoice",0.0);
 //    mutation.setParameter("distributionIndex",20.0);    
-    Mutation mutation2 = new ShiftNoteMutationAtonal();
-    mutation2.setParameter("probabilityShiftNote",1.0);
+    Mutation mutation2 = new ShiftPartitionMutationAtonal();
+    mutation2.setParameter("probabilityShiftPartition",1.0);
 //    Mutation mutation5 = new InsertRestMutation();
 //    mutation5.setParameter("probabilityInsertRest",0.0);
     

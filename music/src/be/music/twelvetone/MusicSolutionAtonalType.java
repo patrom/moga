@@ -15,7 +15,7 @@ import be.core.RowMatrix;
 import be.core.TwelveToneSets;
 import be.data.InstrumentRange;
 import be.data.Motive;
-import be.data.MotiveAtonal;
+import be.data.Partition;
 import be.data.MusicalStructure;
 import be.moga.population.PopulationStrategy;
 import be.moga.population.PopulationStrategyFactory;
@@ -48,7 +48,7 @@ public class MusicSolutionAtonalType extends SolutionType {
 		Variable[] variables = new Variable[problem_.getNumberOfVariables()];
 		
 		List<MusicalStructure> melodies = new ArrayList<MusicalStructure>();
-		List<MotiveAtonal> atonalMotives = new ArrayList<MotiveAtonal>();
+		List<Partition> atonalMotives = new ArrayList<Partition>();
 //		List<Integer> row = TwelveToneSets.randomizeSet(TwelveToneSets.twelveToneSet);
 		List<Integer> hexaRow1 = Arrays.asList(TwelveToneSets.violinConcertoSchoenbergHexa1);
 		
@@ -62,7 +62,7 @@ public class MusicSolutionAtonalType extends SolutionType {
 //		List<Integer> hexaList1 = rowMatrix.multiplyInverse(hexaRow1);
 		
 		InstrumentRange instrumentRange = ranges.get(0);
-		MotiveAtonal motiveAtonal = Populator.getInstance().generateRow(hexaRow1, instrumentRange, 12);
+		Partition motiveAtonal = Populator.getInstance().generateRow(hexaRow1, instrumentRange, 12);
 		atonalMotives.add(motiveAtonal);
 		
 		Motive motive = new Motive(motiveAtonal.getNotes(), motiveAtonal.getLength());
@@ -73,7 +73,7 @@ public class MusicSolutionAtonalType extends SolutionType {
 		
 		List<Integer> hexaRow2 = Arrays.asList(TwelveToneSets.violinConcertoSchoenbergHexa2);
 		instrumentRange = ranges.get(2);
-		MotiveAtonal motiveAtonal2 = Populator.getInstance().generateRow(hexaRow2, instrumentRange, 0);
+		Partition motiveAtonal2 = Populator.getInstance().generateRow(hexaRow2, instrumentRange, 0);
 		atonalMotives.add(motiveAtonal2);
 		
 		motive = new Motive(motiveAtonal2.getNotes(), motiveAtonal2.getLength());

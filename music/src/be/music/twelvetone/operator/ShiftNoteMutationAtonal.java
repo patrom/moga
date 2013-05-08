@@ -1,20 +1,16 @@
 package be.music.twelvetone.operator;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import be.data.MotiveAtonal;
-import be.data.MusicalStructure;
-import be.data.NotePos;
-import be.music.MusicVariable;
-import be.music.twelvetone.MusicVariableAtonal;
 import jmetal.base.Solution;
 import jmetal.base.operator.mutation.Mutation;
 import jmetal.util.Configuration;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
+import be.data.NotePos;
+import be.data.Partition;
+import be.music.twelvetone.MusicVariableAtonal;
 
 public class ShiftNoteMutationAtonal extends Mutation{
 
@@ -28,14 +24,14 @@ public class ShiftNoteMutationAtonal extends Mutation{
 	 */
 	public void doMutation(double probability, Solution solution) throws JMException {
 		if (PseudoRandom.randDouble() < probability) {
-			List<MotiveAtonal> motives = ((MusicVariableAtonal)solution.getDecisionVariables()[0]).getAtonalMotives();
-			int s = motives.size() - 1;
+			List<Partition> partitions = ((MusicVariableAtonal)solution.getDecisionVariables()[0]).getPartitions();
+			int s = partitions.size() - 1;
 			int melodyIndex = PseudoRandom.randInt(0, s);	
-			MotiveAtonal motive = motives.get(melodyIndex);
-			List<NotePos> notePositions = motive.getNotes();
-			int startMotive = motive.getPosition();
-			int endMotive = startMotive + motive.getLength();
-			if (!notePositions.isEmpty()) {
+			Partition partition = partitions.get(melodyIndex);
+			List<NotePos> notePositions = partition.getNotes();
+			int startPartition = partition.getPosition();
+			int endPartition = startPartition + partition.getLength();
+			if (!notePositions.isEmpty() && notePositions.size() > 1) {
 				int position = PseudoRandom.randInt(0, notePositions.size() - 1);
 				NotePos note = notePositions.get(position);
 				int index = notePositions.indexOf(note);
@@ -46,7 +42,7 @@ public class ShiftNoteMutationAtonal extends Mutation{
 //								int prevPosition = prevNote.getPosition();
 								int notePosition = note.getPosition();
 								if (!containsNoteAtPosition(notePositions, notePosition - MIN_LENGTH)
-										&& startMotive <= notePosition - MIN_LENGTH) {
+										&& startPartition <= notePosition - MIN_LENGTH) {
 									note.setPosition(notePosition - MIN_LENGTH);
 									System.out.println("Shifted");
 								}
@@ -60,7 +56,7 @@ public class ShiftNoteMutationAtonal extends Mutation{
 //								int nextPosition = nextNote.getPosition();
 								int notePosition = note.getPosition();
 								if (!containsNoteAtPosition(notePositions, notePosition + MIN_LENGTH)
-										&& notePosition + MIN_LENGTH <= endMotive) {
+										&& notePosition + MIN_LENGTH <= endPartition) {
 									note.setPosition(notePosition + MIN_LENGTH);
 									System.out.println("Shifted");
 								}

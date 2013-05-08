@@ -119,12 +119,6 @@ public class NSGAII_TwelveTone extends Algorithm {
           	operator.execute(offSpring[0]);
           	operator.execute(offSpring[1]);
       	  }
-//          mutationOperator.execute(offSpring[0]);
-//          mutationOperator.execute(offSpring[1]);
-//          mutationOperator2.execute(offSpring[0]);
-//          mutationOperator2.execute(offSpring[1]);
-//          mutationOperator3.execute(offSpring[0]);
-//          mutationOperator3.execute(offSpring[1]);
           problem_.evaluate(offSpring[0]);
           problem_.evaluateConstraints(offSpring[0]);
           problem_.evaluate(offSpring[1]);

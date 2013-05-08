@@ -7,7 +7,7 @@ import java.util.List;
 import be.core.TwelveToneSets;
 import be.data.InstrumentRange;
 import be.data.Motive;
-import be.data.MotiveAtonal;
+import be.data.Partition;
 import be.data.MusicalStructure;
 import be.util.Populator;
 import jmetal.base.Problem;
@@ -39,7 +39,7 @@ public class MusicSolutionAtonalType2 extends SolutionType {
 	public Variable[] createVariables() throws ClassNotFoundException {
 		Variable[] variables = new Variable[problem_.getNumberOfVariables()];
 		
-		List<MotiveAtonal> atonalMotives = new ArrayList<MotiveAtonal>();
+		List<Partition> atonalMotives = new ArrayList<Partition>();
 //		List<Integer> row = TwelveToneSets.randomizeSet(TwelveToneSets.twelveToneSet);
 		List<Integer> hexaRow1 = Arrays.asList(TwelveToneSets.violinConcertoSchoenbergHexa1);
 		
@@ -57,7 +57,7 @@ public class MusicSolutionAtonalType2 extends SolutionType {
 		for (Integer integer : hexaRow1) {
 			List<Integer> note = new ArrayList<Integer>();
 			note.add(integer);
-			MotiveAtonal motiveAtonal = Populator.getInstance().generateRow(note, instrumentRange, position);
+			Partition motiveAtonal = Populator.getInstance().generateRow(note, instrumentRange, position);
 			atonalMotives.add(motiveAtonal);
 			position = position + 12;
 		}

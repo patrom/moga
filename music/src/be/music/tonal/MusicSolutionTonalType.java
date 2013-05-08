@@ -60,7 +60,7 @@ public class MusicSolutionTonalType extends SolutionType {
 		Variable[] variables = new Variable[problem_.getNumberOfVariables()];
 		PopulationStrategy strategy = PopulationStrategyFactory.getPopulationStrategy(this.strategy);
 		List<MusicalStructure> melodies = strategy.generateMelodies(melodyLength, ranges, scale, profile, length);
-		MusicVariable musicVariable = new MusicVariable(melodies);
+		MusicVariable musicVariable = new MusicVariableTonal(melodies);
 		variables[0] = musicVariable;
 		return variables ;
 	}

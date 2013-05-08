@@ -18,7 +18,7 @@ import be.data.Interval;
 import be.data.IntervalData;
 import be.data.MelodicSentence;
 import be.data.Motive;
-import be.data.MotiveAtonal;
+import be.data.Partition;
 import be.data.MusicalStructure;
 import be.data.NotePos;
 import be.data.Scale;
@@ -193,7 +193,7 @@ public class Populator {
 		harmonyObjectChord[voice] = harmonyObject;
 	}
 	
-	public MotiveAtonal generateRow(List<Integer> row, InstrumentRange range, int offset) {
+	public Partition generateRow(List<Integer> row, InstrumentRange range, int offset) {
 		int size = row.size();
 		int length = offset;
 		List<NotePos> melody = new ArrayList<NotePos>();
@@ -204,7 +204,7 @@ public class Populator {
 			melody.add(note);
 			length += note.getLength();
 		}
-		MotiveAtonal motive = new MotiveAtonal(melody, length, offset);
+		Partition motive = new Partition(melody, length, offset);
 		motive.setVoice(range.getVoice());
 		return motive;
 	}

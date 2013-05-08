@@ -9,31 +9,39 @@ import jmetal.util.Configuration;
 import jmetal.util.JMException;
 import be.data.MelodicSentence;
 import be.data.Motive;
-import be.data.MotiveAtonal;
+import be.data.Partition;
 import be.data.MusicalStructure;
 import be.data.NotePos;
 import be.functions.RhythmicFunctions;
+import be.music.MusicVariable;
 
-public class MusicVariableAtonal2 extends Variable {
+public class MusicVariableAtonal2 extends MusicVariable {
 
 	private static Random random = new Random(System.currentTimeMillis());
 	private static final int MIN_LENGTH = 24;
-	private List<MusicalStructure> melodies = new ArrayList<MusicalStructure>();
+//	private List<MusicalStructure> melodies = new ArrayList<MusicalStructure>();
 	private int size;
 	
-	private List<MotiveAtonal> atonalMotives = new ArrayList<MotiveAtonal>();
+	private List<Partition> partitions = new ArrayList<Partition>();
 
-	public List<MotiveAtonal> getAtonalMotives() {
-		return atonalMotives;
+	public List<Partition> getPartitions() {
+		return partitions;
 	}
 
 	public List<MusicalStructure> getMelodies() {
-		extractSentences(atonalMotives);
+		extractSentences(partitions);
 		return melodies;
 	}
+	
+	@Override
+	public void setMelodies(List<MusicalStructure> melodies) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 
-	public MusicVariableAtonal2(List<MotiveAtonal> atonalMotives, int size) {
-		this.atonalMotives = atonalMotives;
+	public MusicVariableAtonal2(List<Partition> partitions, int size) {
+		this.partitions = partitions;
 		this.size = size;
 		for (int i = 0; i < size; i++) {
 			melodies.add(i, new Motive());
@@ -46,21 +54,21 @@ public class MusicVariableAtonal2 extends Variable {
 	 * @throws JMException
 	 */
 	public MusicVariableAtonal2(MusicVariableAtonal2 musicVariable) throws JMException {
-		this.atonalMotives = cloneMotives(musicVariable.getAtonalMotives());
+		this.partitions = cloneMotives(musicVariable.getPartitions());
 		this.melodies = musicVariable.getMelodies();
-//		extractSentences(atonalMotives);
+//		extractSentences(partitions);
 		
 //		this.harmonyObjects = extractHarmonyObjects(melodies);	
 	}
 
-	public void extractSentences(List<MotiveAtonal> atonalMotives) {
+	public void extractSentences(List<Partition> partitions) {
 		for (MusicalStructure structure : melodies) {
 			structure.setFirstNote(null);
 			structure.setLastNote(null);
 			structure.setLength(0);
 			structure.getNotePositions().clear();
 		}
-		for (MotiveAtonal motiveAtonal : atonalMotives) {
+		for (Partition motiveAtonal : partitions) {
 			List<NotePos> notes = motiveAtonal.getNotes();
 
 //			int rand = random.nextInt(notes.size() - 1);
@@ -119,9 +127,9 @@ public class MusicVariableAtonal2 extends Variable {
 		return notePosition;
 	}
 
-	private List<MotiveAtonal> cloneMotives(List<MotiveAtonal> atonalMotives) {
-		List<MotiveAtonal> motives = new ArrayList<MotiveAtonal>();
-		for (MotiveAtonal motiveAtonal : atonalMotives) {
+	private List<Partition> cloneMotives(List<Partition> partitions) {
+		List<Partition> motives = new ArrayList<Partition>();
+		for (Partition motiveAtonal : partitions) {
 			List<NotePos> notePositions = motiveAtonal.getNotes();
 			List<NotePos> newNotePositions = new ArrayList<NotePos>();
 			int l = notePositions.size();
@@ -139,7 +147,7 @@ public class MusicVariableAtonal2 extends Variable {
 				notePosition.setDynamic(notePositions.get(i).getDynamic());
 				newNotePositions.add(notePosition);
 			}
-			MotiveAtonal motive = new MotiveAtonal(newNotePositions, motiveAtonal.getLength(), motiveAtonal.getPosition());
+			Partition motive = new Partition(newNotePositions, motiveAtonal.getLength(), motiveAtonal.getPosition());
 			motives.add(motive);
 		}
 		return motives;
@@ -189,6 +197,7 @@ public class MusicVariableAtonal2 extends Variable {
 			}
 		return newStructures;
 	}
-	
+
+
 }
 

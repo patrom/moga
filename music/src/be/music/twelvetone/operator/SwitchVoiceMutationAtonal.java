@@ -8,7 +8,7 @@ import jmetal.util.Configuration;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
 import be.data.InstrumentRange;
-import be.data.MotiveAtonal;
+import be.data.Partition;
 import be.data.NotePos;
 import be.music.twelvetone.MusicVariableAtonal;
 
@@ -29,11 +29,11 @@ public class SwitchVoiceMutationAtonal extends Mutation {
 	 */
 	public void doMutation(double probability, Solution solution) throws JMException {
 		if (PseudoRandom.randDouble() < probability) {
-			List<MotiveAtonal> motives = ((MusicVariableAtonal)solution.getDecisionVariables()[0]).getAtonalMotives();
+			List<Partition> motives = ((MusicVariableAtonal)solution.getDecisionVariables()[0]).getPartitions();
 //			int s = motives.size() - 1;
 //			int melodyIndex = PseudoRandom.randInt(0, s);	
-			MotiveAtonal motive = motives.get(0);
-			MotiveAtonal otherMotive = motives.get(1);
+			Partition motive = motives.get(0);
+			Partition otherMotive = motives.get(1);
 			int newMelodyIndex = PseudoRandom.randInt(0, 1);
 			shiftNote(motive, otherMotive, newMelodyIndex);
 			
@@ -42,7 +42,7 @@ public class SwitchVoiceMutationAtonal extends Mutation {
 		} 
 	}
 
-	private void shiftNote(MotiveAtonal motive, MotiveAtonal otherMotive,
+	private void shiftNote(Partition motive, Partition otherMotive,
 			int newMelodyIndex) {
 		List<NotePos> notePositions = motive.getNotes();
 		if (!notePositions.isEmpty()) {	
@@ -63,7 +63,7 @@ public class SwitchVoiceMutationAtonal extends Mutation {
 	}
 
 
-	private boolean containsNoteAtPosition(MotiveAtonal moveToMotive, int position) {
+	private boolean containsNoteAtPosition(Partition moveToMotive, int position) {
 		List<NotePos> notes = moveToMotive.getNotes();
 		for (NotePos notePos : notes) {
 			if (notePos.getPosition() == position) {
