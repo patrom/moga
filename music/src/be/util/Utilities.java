@@ -10,6 +10,7 @@ import org.apache.commons.lang.ArrayUtils;
 import jm.music.data.Note;
 import jm.music.data.Phrase;
 import be.core.StandardDeviation;
+import be.data.InstrumentRange;
 import be.data.Interval;
 import be.data.Profile;
 
@@ -48,8 +49,13 @@ public class Utilities {
 	}
 
 	
-
-	
+	public static InstrumentRange getInstrument(int voice, int low, int high) {
+		InstrumentRange range = new InstrumentRange();
+		range.setVoice(voice);
+		range.setLowest(low);
+		range.setHighest(high);
+		return range;
+	}
 
 
 	public static Interval getEnumInterval(int difference) {

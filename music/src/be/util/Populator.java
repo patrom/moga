@@ -83,6 +83,7 @@ public class Populator {
 				melody.add(note);
 			}
 			Motive motive = new Motive(melody, length);
+			motive.setVoice(v);
 			motiveList.add(motive);
 		}
 		return motiveList;

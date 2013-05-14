@@ -1,7 +1,7 @@
 package be.data;
 
 
-public class NotePos implements Comparable<NotePos>{
+public class NotePos implements Comparable<NotePos>, Cloneable{
 
 	
 	/** The pitch value which indicates a rest. */
@@ -25,15 +25,7 @@ public class NotePos implements Comparable<NotePos>{
 	private int octave;
 	private int pitchClass;
 	private int voice;
-	private Motive motive;
 	
-	public Motive getMotive() {
-		return motive;
-	}
-
-	public void setMotive(Motive motive) {
-		this.motive = motive;
-	}
 
 	public NotePos() {
 	}
@@ -207,6 +199,11 @@ public class NotePos implements Comparable<NotePos>{
 		if (position != other.position)
 			return false;
 		return true;
+	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 
 }

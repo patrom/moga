@@ -5,14 +5,15 @@ import java.util.List;
 
 import be.data.InstrumentRange;
 import be.data.Scale;
+import be.util.Utilities;
 
 public class MusicProperties {
 	
 	public MusicProperties() {
-		ranges.add(getInstrument(0, 48, 60));
-		ranges.add(getInstrument(1, 54, 70));
-		ranges.add(getInstrument(2, 60, 74));
-		ranges.add(getInstrument(3, 65, 80));
+		ranges.add(Utilities.getInstrument(0, 48, 60));
+		ranges.add(Utilities.getInstrument(1, 54, 70));
+		ranges.add(Utilities.getInstrument(2, 60, 74));
+		ranges.add(Utilities.getInstrument(3, 65, 80));
 	}
 	
 	//harmony
@@ -172,12 +173,6 @@ public class MusicProperties {
 		this.rhythmConsDissValue = rhythmConsDissValue;
 	}
 	
-	private InstrumentRange getInstrument(int voice, int low, int high) {
-		InstrumentRange range = new InstrumentRange();
-		range.setVoice(voice);
-		range.setLowest(low);
-		range.setHighest(high);
-		return range;
-	}
+	
 	
 }
