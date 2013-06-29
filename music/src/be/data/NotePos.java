@@ -25,7 +25,7 @@ public class NotePos implements Comparable<NotePos>, Cloneable{
 	private int octave;
 	private int pitchClass;
 	private int voice;
-	
+	private int channel = 0;
 
 	public NotePos() {
 	}
@@ -205,5 +205,13 @@ public class NotePos implements Comparable<NotePos>, Cloneable{
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
+
+//	public int getChannel() {
+//		return channel;
+//	}
+//
+//	public void setChannel(int channel) {
+//		this.channel = channel;
+//	}
 
 }

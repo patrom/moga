@@ -25,6 +25,22 @@ public class TestPopulation {
 		return list;	
 	}
 	
+	public static List<Motive> melodyDisplacement(int offset){
+		List<Motive> list = new ArrayList<Motive>();
+		List<NotePos> melody = new ArrayList<NotePos>();
+		melody.add(new NotePos(60,0 + offset, 6));
+		melody.add(new NotePos(Integer.MIN_VALUE,6 + offset, 6));
+		melody.add(new NotePos(62,12 + offset, 12));
+		melody.add(new NotePos(64,24 + offset, 12));
+		melody.add(new NotePos(60,36 + offset, 12));
+		melody.add( new NotePos(62,48 + offset, 12));
+		melody.add(new NotePos(64,60 + offset, 12));
+		melody.add(new NotePos(65,72 + offset, 24));
+		Motive motive = new Motive(melody, 96);
+		list.add(motive);
+		return list;	
+	}
+	
 	public static List<Motive> melody2(){
 		List<Motive> list = new ArrayList<Motive>();
 		List<NotePos> melody = new ArrayList<NotePos>();
@@ -308,6 +324,22 @@ public class TestPopulation {
 		list.add(motive);
 		
 		return list;
+	}
+	
+	public static List<Motive> melodyVextab(int offset){
+		List<Motive> list = new ArrayList<Motive>();
+		List<NotePos> melody = new ArrayList<NotePos>();
+		melody.add(new NotePos(60,0 + offset, 6));
+		melody.add(new NotePos(61,6 + offset, 6));
+		melody.add(new NotePos(62,12 + offset, 12));
+		melody.add(new NotePos(64,24 + offset, 12));
+		melody.add(new NotePos(60,36 + offset, 12));
+		melody.add( new NotePos(62,48 + offset, 12));
+		melody.add(new NotePos(64,60 + offset, 12));
+		melody.add(new NotePos(65,72 + offset, 24));
+		Motive motive = new Motive(melody, 96);
+		list.add(motive);
+		return list;	
 	}
 	
 	

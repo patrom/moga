@@ -58,8 +58,19 @@ public class MidiParser {
 	 		ranges.add(getInstrument(2, 60, 74));
 	 		ranges.add(getInstrument(3, 65, 80));
 
-	        List<Motive> motives = readMidi("C:/comp/mulitobjectivemusic/test1.mid");
-	        
+	        List<Motive> motives = readMidi("/Users/parm/comp/moga/music/test2.mid");
+//	 		List<Motive> motives = new ArrayList<Motive>();
+//	 		Motive mot = new Motive();
+//	 		NotePos note = new NotePos();
+//	 		note.setChannel(0);
+//	 		note.setPitch(60);
+//	 		note.setPosition(12);
+//	 		note.setLength(24);
+//	 		note.setDynamic(100);
+//	 		mot.addNote(note);
+//	 		motives.add(mot);
+	        Sequence seq = MidiDevicesUtil.createSequence(motives, 0);
+	        MidiDevicesUtil.playOnKontakt(seq, 120f);
 	        for (Motive motive : motives) {
 	        	System.out.print(motive.getVoice() + ":");
 				List<NotePos> notes = motive.getNotePositions();
@@ -77,14 +88,14 @@ public class MidiParser {
 //	        Score score = ScoreUtilities.createScore2(sentences, null);
 //	        View.notate(score);
 	        
-	        for (Motive motive : motives) {
-	        	System.out.print(motive.getVoice() + ":");
-				List<NotePos> notes = motive.getNotePositions();
-				for (NotePos notePos : notes) {
-					System.out.print(notePos.getPitch() + ",");
-				}
-				System.out.println();
-			} 
+//	        for (Motive motive : motives) {
+//	        	System.out.print(motive.getVoice() + ":");
+//				List<NotePos> notes = motive.getNotePositions();
+//				for (NotePos notePos : notes) {
+//					System.out.print(notePos.getPitch() + ",");
+//				}
+//				System.out.println();
+//			} 
 	    }
 
 		public static List<Motive> readMidi(String path) throws InvalidMidiDataException, IOException {	
@@ -167,6 +178,26 @@ public class MidiParser {
 	        }
 	        List<Motive> motives = new ArrayList<Motive>(map.values());        
 			return motives;
+		}
+		
+		public Sequence writeToSequence(List<Motive> motives) throws InvalidMidiDataException{
+			Sequence sequence = new Sequence(0.0F, 12);
+	        int channel = 0;
+	        for (Motive motive : motives) {
+	        	Track track = sequence.createTrack();
+	        	System.out.print(motive.getVoice() + ":");
+				List<NotePos> notes = motive.getNotePositions();
+				for (NotePos notePos : notes) {
+					System.out.print(notePos.getPitch() + ",");
+					ShortMessage noteOn = new ShortMessage();
+		        	noteOn.setMessage(ShortMessage.NOTE_ON, channel, notePos.getPitch(), notePos.getDynamic());
+		        	MidiEvent event = new MidiEvent(noteOn, notePos.getPosition());
+		        	track.add(event);
+		        	//note off!!
+				}
+				System.out.println();
+			}
+			return sequence; 
 		}
 
 }

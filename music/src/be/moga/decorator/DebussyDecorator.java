@@ -3,20 +3,21 @@ package be.moga.decorator;
 import java.util.List;
 
 import be.data.MusicalStructure;
-import be.moga.MusicEvaluationImpl;
+import be.moga.MusicEvaluation;
+import be.moga.MusicProperties;
 import be.util.FugaUtilities;
 
 public class DebussyDecorator extends EvaluationDecorator {
 
-	public DebussyDecorator(MusicEvaluationImpl impl) {
-		super(impl);
+	public DebussyDecorator(MusicEvaluation impl, MusicProperties props) {
+		super(impl, props);
 	}
 
 	public double[] evaluate(List<MusicalStructure> sentences) {
-		int length = impl.getProperties().getMelodyLength() * 12;
-		MusicalStructure structure1 = FugaUtilities.harmonizeMelody(sentences, impl.getProperties().getScale(), 2, 1, length);
+		int length = properties.getMelodyLength() * 12;
+		MusicalStructure structure1 = FugaUtilities.harmonizeMelody(sentences, properties.getScale(), 2, 1, length);
 		sentences.add(structure1);
-		MusicalStructure structure2 = FugaUtilities.harmonizeMelody(sentences, impl.getProperties().getScale(), 2, 2, length);
+		MusicalStructure structure2 = FugaUtilities.harmonizeMelody(sentences, properties.getScale(), 2, 2, length);
 		sentences.add(structure2);
 		double[] values = impl.evaluate(sentences);
 		sentences.remove(structure1);

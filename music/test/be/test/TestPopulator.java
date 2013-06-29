@@ -3,6 +3,7 @@ package be.test;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -23,6 +24,7 @@ import be.data.IntervalData;
 import be.data.Motive;
 import be.data.MusicalStructure;
 import be.data.Scale;
+import be.moga.MusicEvaluation;
 import be.moga.MusicEvaluationImpl;
 import be.moga.MusicProperties;
 import be.util.Populator;
@@ -34,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 public class TestPopulator {
 	
 	private static Logger LOGGER = Logger.getLogger(TestPopulator.class.getName());
-	private MusicEvaluationImpl impl;
+	private MusicEvaluation impl;
 	double[] objectives;
 	
 	public TestPopulator() throws IOException{
@@ -51,14 +53,16 @@ public class TestPopulator {
 	
 	@After
 	public void loggerInfo() {
-		LOGGER.info( "Harmony: " + objectives[0] + ", " 
-				+ "VoiceLeading: " + objectives[1] + ", " 
-				+ "Melody: " + objectives[2] + ", "
-				+ "Rhythm: " + objectives[3] + ", "
-				+ "tonality: " + objectives[4] + "\n");
-//				+ "Constraints: lowest interval register: " + objectives[5] + ", "
-//				+ "repetitions Pitches: " + objectives[6] + ", "
-//				+ "repetitions rhythms: " + objectives[7]);
+		if (objectives != null) {
+			LOGGER.info( "Harmony: " + objectives[0] + ", " 
+					+ "VoiceLeading: " + objectives[1] + ", " 
+					+ "Melody: " + objectives[2] + ", "
+					+ "Rhythm: " + objectives[3] + ", "
+					+ "tonality: " + objectives[4] + "\n");
+//					+ "Constraints: lowest interval register: " + objectives[5] + ", "
+//					+ "repetitions Pitches: " + objectives[6] + ", "
+//					+ "repetitions rhythms: " + objectives[7]);
+		}
 		
 //		Play.midi(s, false);
 	}
@@ -142,6 +146,17 @@ public class TestPopulator {
 		List<Motive> motives = TestPopulation.pedaalToon();	
 		List<MusicalStructure> sentences = Populator.getInstance().extractSentence(motives);
 		objectives = impl.evaluate(sentences);
+//		Score s = ScoreUtilities.createScore2(sentences, null);
+//		View.notate(s);
+//		Play.midi(s, false);
+	}
+	
+	@Test
+	public void testInnermetric(){
+		LOGGER.info("testInnermetric");
+		List<Motive> motives = TestPopulation.melodyDisplacement(6);
+		List<MusicalStructure> sentences = Populator.getInstance().extractSentence(motives);
+		Map<Integer, Double> map = impl.applyInnerMetricWeight(sentences);
 //		Score s = ScoreUtilities.createScore2(sentences, null);
 //		View.notate(s);
 //		Play.midi(s, false);

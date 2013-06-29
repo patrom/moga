@@ -31,6 +31,7 @@ public class Frequency
     {
         int i = (int)(d + 120.5D);
         StringBuffer stringbuffer = new StringBuffer(NOTE_SYMBOL[i % 12]);
+        stringbuffer.append("/");
         stringbuffer.append(Integer.toString(i / 12 - 10));
         return new String(stringbuffer);
     }

@@ -25,9 +25,13 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
+
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.Sequence;
 
 import jm.JMC;
 import jm.music.data.Score;
@@ -54,10 +58,12 @@ import be.music.tonal.operator.OnePointCrossover;
 import be.music.tonal.operator.SplitRhythmMutation;
 import be.music.twelvetone.operator.ShiftNoteMutationAtonal;
 import be.music.twelvetone.operator.SwitchVoiceMutationAtonal;
+import be.util.MidiDevicesUtil;
 import be.util.ScoreUtilities;
 
 public class NSGAII_TwelveToneMain implements JMC{
-	  public static Logger      logger_ ;      // Logger object
+	  private static final int MIN_LENGTH = 6;
+	public static Logger      logger_ ;      // Logger object
 	  public static FileHandler fileHandler_ ; // FileHandler object
 	  private static MusicProperties inputProps = new MusicProperties();
 
@@ -140,7 +146,7 @@ public class NSGAII_TwelveToneMain implements JMC{
     algorithm.addOperator("crossover",crossover);
     algorithm.addOperator("mutation",mutation);
     algorithm.addOperator("mutation2",mutation2);
-//    algorithm.addOperator("mutation3",mutation3);
+    algorithm.addOperator("mutation3",mutation3);
 //    algorithm.addOperator("mutation4",mutation4);
 //    algorithm.addOperator("mutation5",mutation5);
     algorithm.addOperator("selection",selection);
@@ -199,9 +205,11 @@ public class NSGAII_TwelveToneMain implements JMC{
 //		sentences.add(structure);
 //		MusicalStructure structure2 = FugaUtilities.harmonizeMelody(sentences, inputProps.getScale(), 2, 2, inputProps.getMelodyLength() * 12);
 //		sentences.add(structure2);
-		
+		changeLengthsRandom(sentences);
 		printNotes(sentences);
 		viewScore(sentences, i);
+		
+		
 		i++;
 	  }
 	  
@@ -234,6 +242,48 @@ public class NSGAII_TwelveToneMain implements JMC{
 //	  }
 
   }
+  
+  private static void changeLengthsLegato(List<MusicalStructure> sentences) {
+		for (MusicalStructure musicalStructure : sentences) {
+			List<NotePos> notes = musicalStructure.getNotePositions();
+			int size = notes.size() - 1;
+			for (int i = 0; i < size; i++) {
+				NotePos firstNote = notes.get(i);
+				NotePos secondNote = notes.get(i + 1);
+				int diff = secondNote.getPosition() - firstNote.getPosition();
+				firstNote.setLength(diff);
+			}
+		}
+	}
+  
+  private static Random rand = new Random();
+  private static void changeLengthsRandom(List<MusicalStructure> sentences) {
+		for (MusicalStructure musicalStructure : sentences) {
+			List<NotePos> notes = musicalStructure.getNotePositions();
+			int size = notes.size() - 1;
+			for (int i = 0; i < size; i++) {
+				NotePos firstNote = notes.get(i);
+				NotePos secondNote = notes.get(i + 1);
+				int diff = secondNote.getPosition() - firstNote.getPosition();
+				int q = (diff/MIN_LENGTH) + 1;
+				int r = rand.nextInt(q);
+				int l = r * MIN_LENGTH;
+				if (l > 3) {
+					firstNote.setLength(l);
+				}	
+			}
+		}
+	}
+  
+  private static void playOnKontakt(List<MusicalStructure> sentences) {
+		try {
+			Sequence seq = MidiDevicesUtil.createSequenceFromStructures(sentences, inputProps.getRanges());
+			MidiDevicesUtil.playOnKontakt(seq, ScoreUtilities.randomTempoFloat());
+		} catch (InvalidMidiDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	private static void printNotes(List<MusicalStructure> sentences) {
 		for (MusicalStructure musicalStructure : sentences) {

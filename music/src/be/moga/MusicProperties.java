@@ -10,10 +10,10 @@ import be.util.Utilities;
 public class MusicProperties {
 	
 	public MusicProperties() {
-		ranges.add(Utilities.getInstrument(0, 48, 60));
-		ranges.add(Utilities.getInstrument(1, 54, 70));
-		ranges.add(Utilities.getInstrument(2, 60, 74));
-		ranges.add(Utilities.getInstrument(3, 65, 80));
+		ranges.add(Utilities.getInstrument(0, 48, 60, 0));
+		ranges.add(Utilities.getInstrument(1, 54, 70, 1));
+		ranges.add(Utilities.getInstrument(2, 60, 74, 2));
+		ranges.add(Utilities.getInstrument(3, 65, 80, 3));
 	}
 	
 	//harmony
@@ -36,6 +36,7 @@ public class MusicProperties {
 	
 	//tonality
 	private int[] scale = Scale.MAJOR_SCALE;
+	private String key = "C";
 	
 	//generation
 	private int numerator = 4;//2/4,4/4,3/4 - 6/8
@@ -171,6 +172,12 @@ public class MusicProperties {
 	}
 	public void setRhythmConsDissValue(double rhythmConsDissValue) {
 		this.rhythmConsDissValue = rhythmConsDissValue;
+	}
+	public String getKey() {
+		return key;
+	}
+	public void setKey(String key) {
+		this.key = key;
 	}
 	
 	

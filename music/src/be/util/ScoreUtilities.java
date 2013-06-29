@@ -3,12 +3,8 @@ package be.util;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
-import org.apache.commons.lang.ArrayUtils;
-
 
 import jm.JMC;
 import jm.music.data.Note;
@@ -16,10 +12,10 @@ import jm.music.data.Part;
 import jm.music.data.Phrase;
 import jm.music.data.Rest;
 import jm.music.data.Score;
-import be.data.MelodicSentence;
+import be.data.Motive;
 import be.data.MusicalStructure;
 import be.data.NotePos;
-import be.data.Scale;
+import be.moga.MusicProperties;
 
 public class ScoreUtilities implements JMC{
 
@@ -116,6 +112,17 @@ public class ScoreUtilities implements JMC{
 			}
 		}
 		
+		double r = randomTempo();
+		score.setTempo(r);
+		return score;
+	}
+	
+	
+	/**
+	 * Generates random tempo between 50 - 150 bpm
+	 * @return
+	 */
+	public static double randomTempo() {
 		double r = random.nextDouble();
 		if (r < 0.5) {
 			r = (r * 100) + 100;
@@ -123,8 +130,22 @@ public class ScoreUtilities implements JMC{
 			r = r * 100;
 		}
 		//tempo between 50 - 150
-		score.setTempo(r);
-		return score;
+		return r;
+	}
+	
+	/**
+	 * Generates random tempo between 50 - 150 bpm
+	 * @return
+	 */
+	public static float randomTempoFloat() {
+		float r = random.nextFloat();
+		if (r < 0.5) {
+			r = (r * 100) + 100;
+		} else {
+			r = r * 100;
+		}
+		//tempo between 50 - 150
+		return r;
 	}
 	
 	public static Score createScore2(List<MusicalStructure> sentences, int[] ensemble){
@@ -182,14 +203,162 @@ public class ScoreUtilities implements JMC{
 			}
 		}
 		
-		double r = random.nextDouble();
-		if (r < 0.5) {
-			r = (r * 100) + 100;
-		} else {
-			r = r * 100;
-		}
+		double r = randomTempo();
 		//tempo between 50 - 150
 		score.setTempo(r);
 		return score;
+	}
+	
+	public static String createVexTab(List<MusicalStructure> sentences, MusicProperties properties){
+		int bar = (int) (properties.getNumerator() * ATOMIC_VALUE);
+		StringBuilder builder = new StringBuilder();
+		for (MusicalStructure musicalStructure : sentences) {	
+			List<NotePos> notePosistions = musicalStructure.getNotePositions();
+			if (!notePosistions.isEmpty()) {
+				builder.append("tabstave notation=true tablature=false");
+				NotePos firstNote = notePosistions.get(0);
+				if (firstNote.getPitch() < 60) {
+					builder.append(" clef=bass");
+				} else {
+					builder.append(" clef=treble");
+				}
+				builder.append(" key=" + properties.getKey());
+				builder.append(" time=" + properties.getNumerator() + "/4");
+				builder.append("\n");
+				builder.append("notes "); 
+				
+				int noteEndPosition = (firstNote.getPosition() + firstNote.getLength()) % bar;
+				int startPosition = firstNote.getPosition() % bar;
+				int beforeBarDiff = bar - startPosition;
+				if (firstNote.getPosition() > 0) {
+					builder.append(getVexTabRest(firstNote.getPosition()));
+				}
+				if (firstNote.getPosition() == bar) {
+					builder.append(" | ");
+					builder.append(getVexTabRhythm(firstNote.getLength()));
+					builder.append(Frequency.makeNoteSymbol(firstNote.getPitch()));
+				}else if (beforeBarDiff < firstNote.getLength()) {
+					insertBarSymbol(builder, firstNote, noteEndPosition, beforeBarDiff);
+				}
+				int length = notePosistions.size();
+				for (int i = 0; i < length; i++) {
+					NotePos notePos = notePosistions.get(i);
+					noteEndPosition = (notePos.getPosition() + notePos.getLength()) % bar;
+					startPosition = notePos.getPosition() % bar;
+					beforeBarDiff = bar - startPosition;
+					if (notePos.getPosition() == bar) {
+						builder.append(" | ");
+						builder.append(getVexTabRhythm(notePos.getLength()));
+						builder.append(Frequency.makeNoteSymbol(notePos.getPitch()));
+					} else if ((bar - startPosition) < notePos.getLength()) {
+						insertBarSymbol(builder, notePos, noteEndPosition, beforeBarDiff);
+					}else{
+						builder.append(getVexTabRhythm(notePos.getLength()));
+						builder.append(Frequency.makeNoteSymbol(notePos.getPitch()));
+					}
+					
+					if ((i + 1) < length) {	
+						NotePos nextNotePos = notePosistions.get(i + 1);
+						int gap = (notePos.getPosition() + notePos.getLength()) - nextNotePos.getPosition();
+						if (gap < 0) {
+							int restEndPosition = (notePos.getPosition() + notePos.getLength()) + notePos.getLength();
+							if (((notePos.getPosition() + notePos.getLength())/(double)bar) < 1 
+									&& (restEndPosition/(double)bar) > 1) {
+								int firstSymbol = bar - (notePos.getPosition() + notePos.getLength());
+								builder.append(getVexTabRest(firstSymbol));
+								builder.append(" | ");
+								int secondSymbol = restEndPosition - bar;
+								builder.append(getVexTabRest(secondSymbol));
+							}else{
+								builder.append(getVexTabRest(-gap));
+							}
+						}	
+					}	
+				}
+			}
+			builder.append("\n");
+		}
+		return builder.toString();
+		
+	}
+	
+	private static void insertBarSymbol(StringBuilder builder, NotePos note, int afterBarDiff, int beforeBarDiff) {
+		builder.append(getVexTabRhythm(beforeBarDiff));
+		String noteSymbol = Frequency.makeNoteSymbol(note.getPitch());
+		builder.append(noteSymbol);
+		builder.append(" | ");
+		builder.append(getVexTabRhythm(afterBarDiff));
+		builder.append("T");
+		builder.append(noteSymbol);
+	}
+		
+//		notes :w :h :q :8 :16 :32 :64
+//		notes :hd :qd :8d :16d :32d :64d (Adding a d for dotted notes)
+	private static String getVexTabRhythm(int i) {
+		switch (i) {
+		case 3:
+			return ":16";
+		case 6:
+			return ":8";
+		case 9:
+			return "8d";
+		case 12:
+			return ":q";
+		case 18:
+			return ":qd";
+		case 24:
+			return ":h";
+		case 32:
+			return ":hd";
+		case 48:
+			return ":w";
+		}
+		throw new IllegalArgumentException("Rhythm value unknown:" + i);
+	}
+	
+	private static String getVexTabRest(int i) {
+		switch (i) {
+		case 3:
+			return ":16##";
+		case 6:
+			return ":8##";
+		case 9:
+			return ":8d##";
+		case 12:
+			return ":q##";
+		case 15:
+			return ":q##:16##";
+		case 18:
+			return ":q##:8##";
+		case 21:
+			return ":q##:8d##";
+		case 24:
+			return ":h##";
+		case 27:
+			return ":h##:16##";
+		case 30:
+			return ":h##:8##";
+		case 33:
+			return ":h##:8d##";
+		case 36:
+			return ":h##:q##";
+		case 39:
+			return ":h##:q##:16##";
+		case 41:
+			return ":h##:q##:8##";
+		case 44:
+			return ":h##:q##:8D##";
+		case 48:
+			return ":w##";
+		}
+		throw new IllegalArgumentException("Rest value unknown:" + i);
+	}
+	
+	public static void main(String[] args) {
+		List<Motive> motives = TestPopulation.melodyVextab(18);
+		List<MusicalStructure> sentences = Populator.getInstance().extractSentence(motives);
+		MusicProperties props = new MusicProperties();
+		String vexTab = createVexTab(sentences, props);
+		System.out.println(vexTab);
 	}
 }

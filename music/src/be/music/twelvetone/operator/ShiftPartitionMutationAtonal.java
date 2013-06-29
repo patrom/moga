@@ -9,6 +9,7 @@ import jmetal.base.operator.mutation.Mutation;
 import jmetal.util.Configuration;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
+import be.data.NotePos;
 import be.data.Partition;
 import be.music.twelvetone.MusicVariableAtonal2;
 
@@ -28,31 +29,44 @@ public class ShiftPartitionMutationAtonal extends Mutation {
 			
 			
 			if (!partitions.isEmpty()) {
-				int position = PseudoRandom.randInt(0, partitions.size() - 1);
-				Partition partition = partitions.get(position);
-				int index = partitions.indexOf(partition);
-					if (random.nextBoolean()) {
-						if (index >= 1) {
-							Partition prevPartition = partitions.get(index - 1);
-							int partitionPosition = partition.getPosition();
-//							if (!containsNoteAtPosition(partitions, notePosition - MIN_LENGTH)
-//									&& startPartition <= notePosition - MIN_LENGTH) {
-//								partition.setPosition(notePosition - MIN_LENGTH);
-//								System.out.println("Shifted");
-//							}	
-						}
-						
-					} else {
-						if (index < partitions.size() - 1) {
-							Partition nextPartition = partitions.get(index + 1);
-							int partitionPosition = partition.getPosition();
-//							if (!containsNoteAtPosition(partitions, notePosition + MIN_LENGTH)
-//									&& notePosition + MIN_LENGTH <= endPartition) {
-//								partition.setPosition(notePosition + MIN_LENGTH);
-//								System.out.println("Shifted");
-//							}	
-						}
+				int index = PseudoRandom.randInt(0, partitions.size() - 1);
+				Partition partition = partitions.get(index);
+				int oldPosition = partition.getPosition();
+				int rand = PseudoRandom.randInt(0, 8);
+				int newPosition = rand * 6;
+				partition.setPosition(newPosition);
+				int diff = newPosition - oldPosition;
+				if (diff != 0) {
+					List<NotePos> notes = partition.getNotes();
+					for (NotePos notePos : notes) {
+						notePos.setPosition(diff + notePos.getPosition());
+					}
+					System.out.println("Partition shift:" + partition.getPosition());
 				}
+				
+//				int index = partitions.indexOf(partition);
+//					if (random.nextBoolean()) {
+//						if (index >= 1) {
+//							Partition prevPartition = partitions.get(index - 1);
+//							int partitionPosition = partition.getPosition();
+////							if (!containsNoteAtPosition(partitions, notePosition - MIN_LENGTH)
+////									&& startPartition <= notePosition - MIN_LENGTH) {
+////								partition.setPosition(notePosition - MIN_LENGTH);
+////								System.out.println("Shifted");
+////							}	
+//						}
+//						
+//					} else {
+//						if (index < partitions.size() - 1) {
+//							Partition nextPartition = partitions.get(index + 1);
+//							int partitionPosition = partition.getPosition();
+////							if (!containsNoteAtPosition(partitions, notePosition + MIN_LENGTH)
+////									&& notePosition + MIN_LENGTH <= endPartition) {
+////								partition.setPosition(notePosition + MIN_LENGTH);
+////								System.out.println("Shifted");
+////							}	
+//						}
+//				}
 			}
 		} 
 	}

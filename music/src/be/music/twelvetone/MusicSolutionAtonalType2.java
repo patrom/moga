@@ -43,6 +43,8 @@ public class MusicSolutionAtonalType2 extends SolutionType {
 //		List<Integer> row = TwelveToneSets.randomizeSet(TwelveToneSets.twelveToneSet);
 		List<Integer> hexaRow1 = Arrays.asList(TwelveToneSets.violinConcertoSchoenbergHexa1);
 		
+		List<Integer> hexaRow2 = Arrays.asList(TwelveToneSets.violinConcertoSchoenbergHexa2);
+		
 //		RowMatrix rowMatrix = new RowMatrix(hexaRow1.size(), hexaRow1);
 //		rowMatrix.show();
 //		List<Integer> hexaList1 = rowMatrix.transposeSet(0);
@@ -53,15 +55,12 @@ public class MusicSolutionAtonalType2 extends SolutionType {
 //		List<Integer> hexaList1 = rowMatrix.multiplyInverse(hexaRow1);
 		
 		InstrumentRange instrumentRange = ranges.get(0);
-		int position = 0;
-		for (Integer integer : hexaRow1) {
-			List<Integer> note = new ArrayList<Integer>();
-			note.add(integer);
-			Partition motiveAtonal = Populator.getInstance().generateRow(note, instrumentRange, position);
-			atonalMotives.add(motiveAtonal);
-			position = position + 12;
-		}
+		Partition motiveAtonal = Populator.getInstance().generateRow(hexaRow1, instrumentRange, 0);
+		atonalMotives.add(motiveAtonal);
 		
+		InstrumentRange instrumentRange2 = ranges.get(1);
+		Partition motiveAtonal2 = Populator.getInstance().generateRow(hexaRow2, instrumentRange2,0);
+		atonalMotives.add(motiveAtonal2);
 
 //		List<Integer> hexaRow2 = Arrays.asList(TwelveToneSets.violinConcertoSchoenbergHexa2);
 //		instrumentRange = ranges.get(2);

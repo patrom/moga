@@ -7,6 +7,7 @@ import jmetal.util.JMException;
 import net.sourceforge.jFuzzyLogic.membership.MembershipFunction;
 import net.sourceforge.jFuzzyLogic.membership.MembershipFunctionTriangular;
 import net.sourceforge.jFuzzyLogic.membership.Value;
+import be.moga.MusicEvaluation;
 import be.moga.MusicEvaluationImpl;
 import be.moga.MusicProperties;
 import be.moga.decorator.DebussyDecorator;
@@ -58,7 +59,7 @@ public class MusicTonalProblem extends Problem {
 	@Override
 	public void evaluate(Solution solution) throws JMException {
 		Variable[] variables = solution.getDecisionVariables();
-		MusicEvaluationImpl controller = new MusicEvaluationImpl(properties);
+		MusicEvaluation controller = new MusicEvaluationImpl(properties);
 //		FugaDecorator decorator = new FugaDecorator(controller, 12, 48);
 //		DebussyDecorator decorator = new DebussyDecorator(controller);
 		double[] objectives = controller.evaluate(((MusicVariable)variables[0]).getMelodies());

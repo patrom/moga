@@ -93,7 +93,7 @@ public class MusicVariableAtonal extends MusicVariable{
 			for (NotePos notePos : notes) {
 				
 				MusicalStructure musicalStructure = melodies.get(notePos.getVoice());
-				musicalStructure.setLength(motiveAtonal.getLength());
+				musicalStructure.setLength(motiveAtonal.getLength());//important for innermetric calculation!!
 //				musicalStructure.setVoice(notePos.getVoice());
 
 				((Motive)musicalStructure.getMotives().get(0)).addNote(notePos);

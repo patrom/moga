@@ -24,8 +24,8 @@ public class Symmetry {
 		System.out.println(inversionalAxis(pitchClasses, 2));
 		System.out.println(inversionalAxis(pitchClasses, 1 , 2));
 		ArrayList<InstrumentRange> ranges = new ArrayList<InstrumentRange>();
-		ranges.add(Utilities.getInstrument(2, 60, 74));
-		ranges.add(Utilities.getInstrument(3, 65, 80));
+		ranges.add(Utilities.getInstrument(2, 60, 74, 0));
+		ranges.add(Utilities.getInstrument(3, 65, 80, 1));
 		List<Motive> motives = Populator.getInstance().generateChordsWithoutRhythm(8, Scale.MAJOR_SCALE, ranges, 8);
 		int i = ranges.size();
 		for (Motive motive : motives) {

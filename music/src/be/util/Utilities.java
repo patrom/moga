@@ -49,11 +49,12 @@ public class Utilities {
 	}
 
 	
-	public static InstrumentRange getInstrument(int voice, int low, int high) {
+	public static InstrumentRange getInstrument(int voice, int low, int high, int channel) {
 		InstrumentRange range = new InstrumentRange();
 		range.setVoice(voice);
 		range.setLowest(low);
 		range.setHighest(high);
+		range.setChannel(channel);
 		return range;
 	}
 

@@ -1,15 +1,16 @@
 package be.moga.decorator;
 
 import be.moga.MusicEvaluation;
-import be.moga.MusicEvaluationImpl;
+import be.moga.MusicProperties;
 
 
-public abstract class EvaluationDecorator implements MusicEvaluation {
+public abstract class EvaluationDecorator {
 	
-	protected MusicEvaluationImpl impl;
+	protected MusicEvaluation impl;
+	protected MusicProperties properties;
 	
-	public EvaluationDecorator(MusicEvaluationImpl impl) {
-		super();
+	public EvaluationDecorator(MusicEvaluation impl, MusicProperties props) {
+		this.properties = props;
 		this.impl = impl;
 	}
 	

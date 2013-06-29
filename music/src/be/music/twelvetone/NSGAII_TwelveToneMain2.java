@@ -29,6 +29,9 @@ import java.util.TreeMap;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.Sequence;
+
 import jm.JMC;
 import jm.music.data.Score;
 import jm.util.View;
@@ -53,8 +56,10 @@ import be.music.tonal.operator.ConcatRhythmMutation;
 import be.music.tonal.operator.OnePointCrossover;
 import be.music.tonal.operator.SplitRhythmMutation;
 import be.music.twelvetone.operator.ShiftNoteMutationAtonal;
+import be.music.twelvetone.operator.ShiftNoteMutationAtonal2;
 import be.music.twelvetone.operator.ShiftPartitionMutationAtonal;
 import be.music.twelvetone.operator.SwitchVoiceMutationAtonal;
+import be.util.MidiDevicesUtil;
 import be.util.ScoreUtilities;
 
 public class NSGAII_TwelveToneMain2 implements JMC{
@@ -103,9 +108,9 @@ public class NSGAII_TwelveToneMain2 implements JMC{
     //algorithm = new ssNSGAII(problem);
 
     // Algorithm parameters
-    int populationSize = 10;
+    int populationSize = 30;
     algorithm.setInputParameter("populationSize",populationSize);
-    algorithm.setInputParameter("maxEvaluations",populationSize * 200);
+    algorithm.setInputParameter("maxEvaluations",populationSize * 2000);
     // Mutation and Crossover for Real codification10
     crossover = new OnePointCrossover(inputProps.getMelodyLength());
 //    crossover = new OnePointCrossover2();
@@ -123,16 +128,14 @@ public class NSGAII_TwelveToneMain2 implements JMC{
     
     mutation = new SwitchVoiceMutationAtonal(inputProps.getRanges());
     mutation.setParameter("probabilitySwitchVoice",0.0);
-//    mutation.setParameter("distributionIndex",20.0);    
-    Mutation mutation2 = new ShiftPartitionMutationAtonal();
-    mutation2.setParameter("probabilityShiftPartition",1.0);
+//    mutation.setParameter("distributionIndex",20.0);  
+    Mutation mutation2 = new ShiftNoteMutationAtonal2();
+    mutation2.setParameter("probabilityShiftNote",0.4);
+    Mutation mutation3 = new ShiftPartitionMutationAtonal();
+    mutation3.setParameter("probabilityShiftPartition",0.2);
 //    Mutation mutation5 = new InsertRestMutation();
 //    mutation5.setParameter("probabilityInsertRest",0.0);
     
-    Mutation mutation3 = new SplitRhythmMutation();
-    mutation3.setParameter("probabilityRhythmSplit",0.0);
-    Mutation mutation4 = new ConcatRhythmMutation();
-    mutation4.setParameter("probabilityRhythmConcat",0.0);
     
     // Selection Operator 
     selection = SelectionFactory.getSelectionOperator("BinaryTournament2") ;                           
@@ -141,7 +144,7 @@ public class NSGAII_TwelveToneMain2 implements JMC{
     algorithm.addOperator("crossover",crossover);
     algorithm.addOperator("mutation",mutation);
     algorithm.addOperator("mutation2",mutation2);
-//    algorithm.addOperator("mutation3",mutation3);
+    algorithm.addOperator("mutation3",mutation3);
 //    algorithm.addOperator("mutation4",mutation4);
 //    algorithm.addOperator("mutation5",mutation5);
     algorithm.addOperator("selection",selection);
@@ -200,9 +203,11 @@ public class NSGAII_TwelveToneMain2 implements JMC{
 //		sentences.add(structure);
 //		MusicalStructure structure2 = FugaUtilities.harmonizeMelody(sentences, inputProps.getScale(), 2, 2, inputProps.getMelodyLength() * 12);
 //		sentences.add(structure2);
-		
+//		changeLengths(sentences);
 		printNotes(sentences);
 		viewScore(sentences, i);
+//		printVextab(sentences);
+//		playOnKontakt(sentences);
 		i++;
 	  }
 	  
@@ -235,6 +240,34 @@ public class NSGAII_TwelveToneMain2 implements JMC{
 //	  }
 
   }
+
+	private static void printVextab(List<MusicalStructure> sentences) {
+		String vexTab = ScoreUtilities.createVexTab(sentences, inputProps);
+		System.out.println(vexTab);
+	}
+
+	private static void changeLengths(List<MusicalStructure> sentences) {
+		for (MusicalStructure musicalStructure : sentences) {
+			List<NotePos> notes = musicalStructure.getNotePositions();
+			int size = notes.size() - 1;
+			for (int i = 0; i < size; i++) {
+				NotePos firstNote = notes.get(i);
+				NotePos secondNote = notes.get(i + 1);
+				int diff = secondNote.getPosition() - firstNote.getPosition();
+				firstNote.setLength(diff);
+			}
+		}
+	}
+
+	private static void playOnKontakt(List<MusicalStructure> sentences) {
+		try {
+			Sequence seq = MidiDevicesUtil.createSequenceFromStructures(sentences, inputProps.getRanges());
+			MidiDevicesUtil.playOnKontakt(seq, ScoreUtilities.randomTempoFloat());
+		} catch (InvalidMidiDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	private static void printNotes(List<MusicalStructure> sentences) {
 		for (MusicalStructure musicalStructure : sentences) {
