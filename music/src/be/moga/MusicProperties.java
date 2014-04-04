@@ -3,17 +3,21 @@ package be.moga;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.data.InstrumentRange;
 import be.data.Scale;
+import be.instrument.Instrument;
+import be.instrument.KontaktLibAltViolin;
+import be.instrument.KontaktLibCello;
+import be.instrument.KontaktLibViolin;
 import be.util.Utilities;
 
 public class MusicProperties {
 	
 	public MusicProperties() {
-		ranges.add(Utilities.getInstrument(0, 48, 60, 0));
-		ranges.add(Utilities.getInstrument(1, 54, 70, 1));
-		ranges.add(Utilities.getInstrument(2, 60, 74, 2));
-		ranges.add(Utilities.getInstrument(3, 65, 80, 3));
+//		ranges.add(Utilities.getInstrument(0, 48, 60, 0));
+		ranges.add(new KontaktLibViolin(0, 1));
+		ranges.add(new KontaktLibViolin(1, 2));
+		ranges.add(new KontaktLibAltViolin(2, 2));
+		ranges.add(new KontaktLibCello(3, 3));
 	}
 	
 	//harmony
@@ -50,12 +54,12 @@ public class MusicProperties {
 	private double crossoverProbability;
 	private double mutationProbability;
 	
-	private List<InstrumentRange> ranges = new ArrayList<InstrumentRange>();
+	private List<Instrument> ranges = new ArrayList<Instrument>();
 	
-	public List<InstrumentRange> getRanges() {
+	public List<Instrument> getRanges() {
 		return ranges;
 	}
-	public void setRanges(List<InstrumentRange> ranges) {
+	public void setRanges(List<Instrument> ranges) {
 		this.ranges = ranges;
 	}
 	public String getHarmonyStrategy() {

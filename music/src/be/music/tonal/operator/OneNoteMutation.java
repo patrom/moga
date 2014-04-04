@@ -8,22 +8,22 @@ import jmetal.base.operator.mutation.Mutation;
 import jmetal.util.Configuration;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
-import be.data.InstrumentRange;
 import be.data.MusicalStructure;
 import be.data.NotePos;
 import be.data.Scale;
+import be.instrument.Instrument;
 import be.music.MusicVariable;
 
 public class OneNoteMutation extends Mutation {
 	
 	private int[] scale;
 	private static Random random = new Random(System.currentTimeMillis());
-	private List<InstrumentRange> ranges;
+	private List<Instrument> ranges;
 	
 	public OneNoteMutation() {	
 	} 
 
-	public OneNoteMutation(int[] scale, List<InstrumentRange> ranges) {
+	public OneNoteMutation(int[] scale, List<Instrument> ranges) {
 		this.scale = scale;
 		this.ranges = ranges;
 	} 

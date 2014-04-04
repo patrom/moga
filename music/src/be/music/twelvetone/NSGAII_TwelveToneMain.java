@@ -50,6 +50,8 @@ import jmetal.util.Configuration;
 import jmetal.util.JMException;
 import be.data.MusicalStructure;
 import be.data.NotePos;
+import be.data.Performance;
+import be.instrument.MidiDevice;
 import be.moga.MusicProperties;
 import be.music.MusicSolution;
 import be.music.MusicVariable;
@@ -190,12 +192,7 @@ public class NSGAII_TwelveToneMain implements JMC{
 		MusicSolution solution = (MusicSolution) iterator.next();
 		solutionMap.put(solution.getHarmony(), solution);
 	  }
-	  
-	  int[] ensemble = new int[4];
-	  ensemble[0] = VIOLIN;
-	  ensemble[1] = VIOLIN;
-	  ensemble[2] = VIOLA;
-	  ensemble[3] = CELLO;
+
 	  int i = 1;
 	  for (Solution solution : solutionMap.values()) {
 		List<MusicalStructure> sentences = ((MusicVariable)solution.getDecisionVariables()[0]).getMelodies();
@@ -206,12 +203,20 @@ public class NSGAII_TwelveToneMain implements JMC{
 //		MusicalStructure structure2 = FugaUtilities.harmonizeMelody(sentences, inputProps.getScale(), 2, 2, inputProps.getMelodyLength() * 12);
 //		sentences.add(structure2);
 		changeLengthsRandom(sentences);
+		changePerformance(sentences);
 		printNotes(sentences);
 		viewScore(sentences, i);
-		
+		playOnKontakt(sentences);
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		i++;
 	  }
+	  
 	  
 	  int j = 1;
 	  for (Solution solution : solutionMap.values()) {
@@ -240,10 +245,22 @@ public class NSGAII_TwelveToneMain implements JMC{
 //	    	i++;
 //  		  }
 //	  }
-
+	 
   }
   
-  private static void changeLengthsLegato(List<MusicalStructure> sentences) {
+  private static void changePerformance(List<MusicalStructure> sentences) {
+	  for (MusicalStructure musicalStructure : sentences) {
+			List<NotePos> notes = musicalStructure.getNotePositions();
+			for (NotePos notePos : notes) {
+				if (notePos.getLength() < 12) {
+					notePos.setPerformance(Performance.STACCATO);
+				}
+			}
+		}
+	
+  }
+
+private static void changeLengthsLegato(List<MusicalStructure> sentences) {
 		for (MusicalStructure musicalStructure : sentences) {
 			List<NotePos> notes = musicalStructure.getNotePositions();
 			int size = notes.size() - 1;
@@ -278,7 +295,7 @@ public class NSGAII_TwelveToneMain implements JMC{
   private static void playOnKontakt(List<MusicalStructure> sentences) {
 		try {
 			Sequence seq = MidiDevicesUtil.createSequenceFromStructures(sentences, inputProps.getRanges());
-			MidiDevicesUtil.playOnKontakt(seq, ScoreUtilities.randomTempoFloat());
+			MidiDevicesUtil.playOnDevice(seq, ScoreUtilities.randomTempoFloat(), MidiDevice.KONTACT);
 		} catch (InvalidMidiDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

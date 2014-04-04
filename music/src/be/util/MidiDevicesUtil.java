@@ -17,29 +17,25 @@ import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 import javax.sound.midi.Transmitter;
 
-import jm.midi.event.EndTrack;
-import jm.midi.event.KeySig;
-import jm.midi.event.TempoEvent;
-import jm.midi.event.TimeSig;
-
-import be.data.InstrumentRange;
 import be.data.Motive;
 import be.data.MusicalStructure;
 import be.data.NotePos;
+import be.instrument.Instrument;
 
 public class MidiDevicesUtil {
 
 	private static final int RESOLUTION = 12;
 	private static Logger LOGGER = Logger.getLogger(MidiDevicesUtil.class.getName());
 
-	public static void playOnKontakt(Sequence sequence, float tempo) {
+	
+	public static void playOnDevice(Sequence sequence, float tempo, be.instrument.MidiDevice kontact) {
 		LOGGER.info("tempo:" + tempo);
 		MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
 		for (int i = 0; i < infos.length; i++) {
 			try {
 				System.out.println(infos[i]);
 //				if (infos[i].getName().equals("Kontakt 5 Virtual Input")) {
-				if (infos[i].getName().equals("Kontakt 5 Virtual Input")) {
+				if (infos[i].getName().equals(kontact.getName())) {
 					final MidiDevice device = MidiSystem
 							.getMidiDevice(infos[i]);
 					device.open();
@@ -62,7 +58,7 @@ public class MidiDevicesUtil {
 								if (device != null) {
 									device.close();
 								}
-								System.exit(0);
+//								System.exit(0);
 							}
 						}
 					});
@@ -85,40 +81,71 @@ public class MidiDevicesUtil {
 		}
 	}
 
-	public static Sequence createSequence(List<Motive> motives, int channel)
+	public static Sequence createSequence(List<Motive> motives, List<Instrument> ranges)
 			throws InvalidMidiDataException {
-		Sequence sequence = new Sequence(Sequence.PPQ, RESOLUTION, motives.size());
-		for (Motive motive : motives) {	
-			List<NotePos> notes = motive.getNotePositions();
-			createTrack(sequence, notes, channel);
+		int motiveSize = motives.size();
+		if (motiveSize != ranges.size()) {
+			throw new IllegalArgumentException("Motives and ranges not equal!");
+		}
+		Sequence sequence = new Sequence(Sequence.PPQ, RESOLUTION, motiveSize);
+		for (int i = 0; i < motiveSize; i++) {
+			List<NotePos> notes = motives.get(i).getNotePositions();
+			createTrack(sequence, notes, ranges.get(i));
 		}
 		return sequence;
 	}
 
-	private static void createTrack(Sequence sequence, List<NotePos> notes, int channel)
+	private static void createTrack(Sequence sequence, List<NotePos> notes, Instrument instrument)
 			throws InvalidMidiDataException {
 		Track track = sequence.createTrack();
+		int prevPerfomance = 0;
 		for (NotePos notePos : notes) {
-			MidiEvent eventOn = createMidiEvent(ShortMessage.NOTE_ON, notePos, notePos.getPosition(), channel);
+			int performance = instrument.getPerformanceValue(notePos.getPerformance());
+			if (performance != prevPerfomance) {
+				MidiEvent changeEvent = createInstrumentChange(instrument, performance);
+				track.add(changeEvent);
+				prevPerfomance = performance;
+			}
+							
+			MidiEvent eventOn = createNoteMidiEvent(ShortMessage.NOTE_ON, notePos, notePos.getPosition(), instrument.getChannel());
 			track.add(eventOn);
-			MidiEvent eventOff = createMidiEvent(ShortMessage.NOTE_OFF, notePos, notePos.getPosition() + notePos.getLength(), channel);
-			track.add(eventOff);
+			MidiEvent eventOff = createNoteMidiEvent(ShortMessage.NOTE_OFF, notePos, notePos.getPosition() + notePos.getLength(), instrument.getChannel());
+			track.add(eventOff);	
+			
 		}
 	}
 
-	public static Sequence createSequenceFromStructures(List<MusicalStructure> structures, List<InstrumentRange> ranges)
+	private static MidiEvent createInstrumentChange(Instrument instrument, int performance) throws InvalidMidiDataException {
+		if (instrument.isKeySwitch()) {
+			NotePos keySwitch = createKeySwitch(performance);
+			MidiEvent change = createNoteMidiEvent(ShortMessage.NOTE_ON, keySwitch, 30, 0);
+			return change;
+		} else {
+			MidiEvent event = createProgramChangeMidiEvent(instrument.getChannel(), 0, performance);
+			return event;
+		}
+	}
+
+	private static NotePos createKeySwitch(int performance) {
+		NotePos keySwitch = new NotePos();
+		keySwitch.setPitch(performance);
+		keySwitch.setDynamic(80);
+		return keySwitch;
+	}
+
+	public static Sequence createSequenceFromStructures(List<MusicalStructure> structures, List<Instrument> ranges)
 			throws InvalidMidiDataException {
 		Sequence sequence = new Sequence(Sequence.PPQ, RESOLUTION, structures.size());
 		int i = 0;
 		for (MusicalStructure motive : structures) {
 			List<NotePos> notes = motive.getNotePositions();
-			createTrack(sequence, notes, ranges.get(i).getChannel());
+			createTrack(sequence, notes, ranges.get(i));
 			i++;
 		}
 		return sequence;
 	}
 
-	private static MidiEvent createMidiEvent(int cmd, NotePos notePos, int position, int channel)
+	private static MidiEvent createNoteMidiEvent(int cmd, NotePos notePos, int position, int channel)
 			throws InvalidMidiDataException {
 		ShortMessage note = new ShortMessage();
 		if (notePos.isRest()) {
@@ -129,6 +156,14 @@ public class MidiDevicesUtil {
 		}
 		
 		MidiEvent event = new MidiEvent(note, position);
+		return event;
+	}
+	
+	private static MidiEvent createProgramChangeMidiEvent(int channel, int pc, int position)
+			throws InvalidMidiDataException {
+		ShortMessage change = new ShortMessage();
+		change.setMessage(ShortMessage.PROGRAM_CHANGE, channel, pc, 0);
+		MidiEvent event = new MidiEvent(change, position);
 		return event;
 	}
 

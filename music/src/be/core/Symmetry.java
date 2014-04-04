@@ -3,12 +3,12 @@ package be.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.data.InstrumentRange;
 import be.data.MelodicSentence;
 import be.data.Motive;
 import be.data.MusicalStructure;
 import be.data.NotePos;
 import be.data.Scale;
+import be.instrument.Instrument;
 import be.moga.MusicProperties;
 import be.util.Populator;
 import be.util.Utilities;
@@ -23,7 +23,7 @@ public class Symmetry {
 		pitchClasses.add(11);
 		System.out.println(inversionalAxis(pitchClasses, 2));
 		System.out.println(inversionalAxis(pitchClasses, 1 , 2));
-		ArrayList<InstrumentRange> ranges = new ArrayList<InstrumentRange>();
+		ArrayList<Instrument> ranges = new ArrayList<Instrument>();
 		ranges.add(Utilities.getInstrument(2, 60, 74, 0));
 		ranges.add(Utilities.getInstrument(3, 65, 80, 1));
 		List<Motive> motives = Populator.getInstance().generateChordsWithoutRhythm(8, Scale.MAJOR_SCALE, ranges, 8);

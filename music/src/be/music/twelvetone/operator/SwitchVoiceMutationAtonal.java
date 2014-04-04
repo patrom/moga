@@ -7,16 +7,16 @@ import jmetal.base.operator.mutation.Mutation;
 import jmetal.util.Configuration;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
-import be.data.InstrumentRange;
 import be.data.Partition;
 import be.data.NotePos;
+import be.instrument.Instrument;
 import be.music.twelvetone.MusicVariableAtonal;
 
 public class SwitchVoiceMutationAtonal extends Mutation {
 
-	private List<InstrumentRange> ranges;
+	private List<Instrument> ranges;
 	
-	public SwitchVoiceMutationAtonal(List<InstrumentRange> ranges) {
+	public SwitchVoiceMutationAtonal(List<Instrument> ranges) {
 		super();
 		this.ranges = ranges;
 	}

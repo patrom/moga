@@ -10,9 +10,9 @@ import org.apache.commons.lang.ArrayUtils;
 import jm.music.data.Note;
 import jm.music.data.Phrase;
 import be.core.StandardDeviation;
-import be.data.InstrumentRange;
 import be.data.Interval;
 import be.data.Profile;
+import be.instrument.Instrument;
 
 public class Utilities {
 	
@@ -49,8 +49,8 @@ public class Utilities {
 	}
 
 	
-	public static InstrumentRange getInstrument(int voice, int low, int high, int channel) {
-		InstrumentRange range = new InstrumentRange();
+	public static Instrument getInstrument(int voice, int low, int high, int channel) {
+		Instrument range = new Instrument();
 		range.setVoice(voice);
 		range.setLowest(low);
 		range.setHighest(high);

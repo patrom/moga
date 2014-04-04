@@ -25,7 +25,8 @@ public class NotePos implements Comparable<NotePos>, Cloneable{
 	private int octave;
 	private int pitchClass;
 	private int voice;
-	private int channel = 0;
+
+	private Performance performance = Performance.LEGATO;
 
 	public NotePos() {
 	}
@@ -206,12 +207,14 @@ public class NotePos implements Comparable<NotePos>, Cloneable{
 		return super.clone();
 	}
 
-//	public int getChannel() {
-//		return channel;
-//	}
-//
-//	public void setChannel(int channel) {
-//		this.channel = channel;
-//	}
+	public Performance getPerformance() {
+		return performance;
+	}
+
+	public void setPerformance(Performance performance) {
+		this.performance = performance;
+	}
+
+
 
 }

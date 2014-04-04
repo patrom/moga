@@ -9,11 +9,11 @@ import jmetal.base.operator.mutation.Mutation;
 import jmetal.util.Configuration;
 import jmetal.util.JMException;
 import jmetal.util.PseudoRandom;
-import be.data.InstrumentRange;
 import be.data.MelodicSentence;
 import be.data.Motive;
 import be.data.MusicalStructure;
 import be.data.NotePos;
+import be.instrument.Instrument;
 import be.music.MusicVariable;
 
 public class ParallelHarmonyMutation extends Mutation {
@@ -22,9 +22,9 @@ public class ParallelHarmonyMutation extends Mutation {
 	private static final int DYNAMIC = Note.DEFAULT_DYNAMIC;
 	
 	private int[] scale;
-	private List<InstrumentRange> ranges;
+	private List<Instrument> ranges;
 	
-	public ParallelHarmonyMutation(int[] scale, List<InstrumentRange> ranges) {
+	public ParallelHarmonyMutation(int[] scale, List<Instrument> ranges) {
 		this.scale = scale;
 	}
 

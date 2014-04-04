@@ -342,5 +342,18 @@ public class TestPopulation {
 		return list;	
 	}
 	
+	public static List<Motive> chromaticScale() {
+		List<Motive> list = new ArrayList<>();
+		List<NotePos> melody = new ArrayList<>();
+		int position = 0;
+		for (int i = 0; i < 12; i++) {
+			melody.add(new NotePos(60 + i, position, 12, 0));
+			position = position + 12;
+		}
+		Motive motive = new Motive(melody, position - 12);
+		list.add(motive);
+		return list;
+	}
+	
 	
 }

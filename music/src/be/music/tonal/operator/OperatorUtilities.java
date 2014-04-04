@@ -2,9 +2,9 @@ package be.music.tonal.operator;
 
 import java.util.List;
 
-import be.data.InstrumentRange;
 import be.data.MusicalStructure;
 import be.data.NotePos;
+import be.instrument.Instrument;
 
 public class OperatorUtilities {
 
@@ -37,11 +37,11 @@ public class OperatorUtilities {
 		return false;
 	} 
 
-	public static  boolean checkVoiceRange(int newChordNote, int voice, List<InstrumentRange> ranges) {
+	public static  boolean checkVoiceRange(int newChordNote, int voice, List<Instrument> ranges) {
 		if (newChordNote > UPPER_LIMIT_PITCH || newChordNote < LOWER_LIMIT_PITCH) {
 			return false;
 		}
-		InstrumentRange range = ranges.get(voice);
+		Instrument range = ranges.get(voice);
 		if (range.getVoice() == voice && (range.getLowest() > newChordNote || range.getHighest() < newChordNote)) {
 			return false;
 		}

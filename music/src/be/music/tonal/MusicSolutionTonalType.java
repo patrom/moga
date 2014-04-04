@@ -9,9 +9,9 @@ import jmetal.base.Problem;
 import jmetal.base.SolutionType;
 import jmetal.base.Variable;
 import be.core.TwelveToneSets;
-import be.data.InstrumentRange;
 import be.data.Motive;
 import be.data.MusicalStructure;
+import be.instrument.Instrument;
 import be.moga.population.PopulationStrategy;
 import be.moga.population.PopulationStrategyFactory;
 import be.music.MusicVariable;
@@ -20,13 +20,13 @@ import be.util.Populator;
 public class MusicSolutionTonalType extends SolutionType {
 
 	public int[] scale;
-	public List<InstrumentRange> ranges;
+	public List<Instrument> ranges;
 	public int melodyLength ;
 	private int[] profile;
 	private String strategy;
 	private int length;
 	
-	public MusicSolutionTonalType(Problem problem, int melodyLenth, int[] scale, int[] profile, String strategy, List<InstrumentRange> ranges, int length) {
+	public MusicSolutionTonalType(Problem problem, int melodyLenth, int[] scale, int[] profile, String strategy, List<Instrument> ranges, int length) {
 		super(problem);
 		problem.variableType_ = new Class[problem.getNumberOfVariables()];
 		problem.setSolutionType(this);

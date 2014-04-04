@@ -16,9 +16,16 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
-import be.data.InstrumentRange;
+import jm.music.data.Score;
+import jm.util.View;
+
 import be.data.Motive;
 import be.data.NotePos;
+import be.instrument.Instrument;
+import be.instrument.KontaktLibAltViolin;
+import be.instrument.KontaktLibCello;
+import be.instrument.KontaktLibViolin;
+import be.instrument.MidiDevice;
 
 public class MidiParser {
 
@@ -31,18 +38,26 @@ public class MidiParser {
 			"F#", "G", "G#", "A", "A#", "B" };
 
 	public static void main(String[] args) throws Exception {
-		List<InstrumentRange> ranges = new ArrayList<InstrumentRange>();
-		ranges.add(Utilities.getInstrument(0, 48, 60, 0));
-		ranges.add(Utilities.getInstrument(1, 54, 70, 0));
-		ranges.add(Utilities.getInstrument(2, 60, 74, 0));
-		ranges.add(Utilities.getInstrument(3, 65, 80, 0));
+		List<Instrument> ranges = new ArrayList<Instrument>();
+//		ranges.add(Utilities.getInstrument(0, 48, 60, 0));
+		ranges.add(new KontaktLibViolin(0, 1));
+		ranges.add(new KontaktLibViolin(1, 2));
+		ranges.add(new KontaktLibAltViolin(2, 2));
+		ranges.add(new KontaktLibCello(3, 3));
 
-		List<Motive> motives = readMidi("/Users/parm/comp/moga/music/test2.mid");
+		List<Motive> motives = readMidi("/Users/parm/comp/moga/music/test3.mid");
 		
 //		TwelveToneUtil.reorder(motives, ranges);
-		
-		Sequence seq = MidiDevicesUtil.createSequence(motives, 0);
-		MidiDevicesUtil.playOnKontakt(seq, 120f);
+		Score score = ScoreUtilities.createScoreMotives(motives);
+		View.notate(score);
+//		TwelveToneUtil.multiply(7, motives, ranges);
+		TwelveToneUtil.retrogradePitches(motives);
+		score = ScoreUtilities.createScoreMotives(motives);
+		View.notate(score);
+//		Sequence seq = MidiDevicesUtil.createSequence(motives, ranges);
+//		float tempo = ScoreUtilities.randomTempoFloat();
+//		System.out.println("Tempo: " + tempo);
+//		MidiDevicesUtil.playOnDevice(seq, tempo, MidiDevice.KONTACT);
 		for (Motive motive : motives) {
 			System.out.print(motive.getVoice() + ":");
 			List<NotePos> notes = motive.getNotePositions();
@@ -164,26 +179,26 @@ public class MidiParser {
 		return motives;
 	}
 
-	public Sequence writeToSequence(List<Motive> motives)
-			throws InvalidMidiDataException {
-		Sequence sequence = new Sequence(0.0F, 12);
-		int channel = 0;
-		for (Motive motive : motives) {
-			Track track = sequence.createTrack();
-			System.out.print(motive.getVoice() + ":");
-			List<NotePos> notes = motive.getNotePositions();
-			for (NotePos notePos : notes) {
-				System.out.print(notePos.getPitch() + ",");
-				ShortMessage noteOn = new ShortMessage();
-				noteOn.setMessage(ShortMessage.NOTE_ON, channel,
-						notePos.getPitch(), notePos.getDynamic());
-				MidiEvent event = new MidiEvent(noteOn, notePos.getPosition());
-				track.add(event);
-				// note off!!
-			}
-			System.out.println();
-		}
-		return sequence;
-	}
+//	public Sequence writeToSequence(List<Motive> motives)
+//			throws InvalidMidiDataException {
+//		Sequence sequence = new Sequence(0.0F, 12);
+//		int channel = 0;
+//		for (Motive motive : motives) {
+//			Track track = sequence.createTrack();
+//			System.out.print(motive.getVoice() + ":");
+//			List<NotePos> notes = motive.getNotePositions();
+//			for (NotePos notePos : notes) {
+//				System.out.print(notePos.getPitch() + ",");
+//				ShortMessage noteOn = new ShortMessage();
+//				noteOn.setMessage(ShortMessage.NOTE_ON, channel,
+//						notePos.getPitch(), notePos.getDynamic());
+//				MidiEvent event = new MidiEvent(noteOn, notePos.getPosition());
+//				track.add(event);
+//				// note off!!
+//			}
+//			System.out.println();
+//		}
+//		return sequence;
+//	}
 
 }

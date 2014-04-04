@@ -13,7 +13,6 @@ import java.util.TreeSet;
 
 import be.core.TwelveToneSets;
 import be.data.HarmonyObject;
-import be.data.InstrumentRange;
 import be.data.Interval;
 import be.data.IntervalData;
 import be.data.MelodicSentence;
@@ -22,6 +21,7 @@ import be.data.Partition;
 import be.data.MusicalStructure;
 import be.data.NotePos;
 import be.data.Scale;
+import be.instrument.Instrument;
 
 public class Populator {
 
@@ -45,15 +45,15 @@ public class Populator {
 	private Populator() {
 	}
 
-	public int[] generateChord(int[] scale, List<InstrumentRange> ranges) {
+	public int[] generateChord(int[] scale, List<Instrument> ranges) {
 		int[] chord = new int[ranges.size()];
 		int pitchClass = Scale.pickRandomFromScale(scale);
-		InstrumentRange r = ranges.get(0);
+		Instrument r = ranges.get(0);
 		int octave = r.getLowest() / 12;
 		int pitch = (octave * 12) + pitchClass;
 		for (int i = 0; i < chord.length; i++) {
 			chord[i] = pitch;
-			InstrumentRange range = ranges.get(i);
+			Instrument range = ranges.get(i);
 			int pc = Scale.pickRandomFromScale(scale);
 			int oct = range.getLowest() / 12;
 			int higherPitch = (oct * 12 ) +  pc;
@@ -65,7 +65,7 @@ public class Populator {
 		return chord;
 	}
 
-	public List<Motive> generateChordsWithoutRhythm(int size, int[] scale, List<InstrumentRange> ranges, int length) {
+	public List<Motive> generateChordsWithoutRhythm(int size, int[] scale, List<Instrument> ranges, int length) {
 		List<int[]> chords = new ArrayList<int[]>();
 		int voices = ranges.size();
 		int[] chord = new int[voices];
@@ -194,7 +194,7 @@ public class Populator {
 		harmonyObjectChord[voice] = harmonyObject;
 	}
 	
-	public Partition generateRow(List<Integer> row, InstrumentRange range, int offset) {
+	public Partition generateRow(List<Integer> row, Instrument range, int offset) {
 		int size = row.size();
 		int length = offset;
 		List<NotePos> melody = new ArrayList<NotePos>();

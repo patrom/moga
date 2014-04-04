@@ -49,6 +49,7 @@ import jmetal.util.Configuration;
 import jmetal.util.JMException;
 import be.data.MusicalStructure;
 import be.data.NotePos;
+import be.instrument.MidiDevice;
 import be.moga.MusicProperties;
 import be.music.MusicSolution;
 import be.music.MusicVariable;
@@ -262,7 +263,7 @@ public class NSGAII_TwelveToneMain2 implements JMC{
 	private static void playOnKontakt(List<MusicalStructure> sentences) {
 		try {
 			Sequence seq = MidiDevicesUtil.createSequenceFromStructures(sentences, inputProps.getRanges());
-			MidiDevicesUtil.playOnKontakt(seq, ScoreUtilities.randomTempoFloat());
+			MidiDevicesUtil.playOnDevice(seq, ScoreUtilities.randomTempoFloat(), MidiDevice.KONTACT);
 		} catch (InvalidMidiDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
